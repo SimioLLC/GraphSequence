@@ -7,8 +7,10 @@ Works with C:\Program Files\Simio LLC\Simio\Examples\SchedulingParallelRouteCont
 
 Get its data from the first 3 columns in the ImmediateSuccessorSequences table.  
 
-The first column is the filter.  
-The second column is the sequence.  ]
+The first column is the filter. 
+
+The second column is the sequence.
+
 The third column is the successor sequence.
 
 ![image](https://user-images.githubusercontent.com/42541127/214170900-7e1dabd1-e842-41e0-80be-0e5646ae5a05.png)
