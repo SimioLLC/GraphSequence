@@ -44,34 +44,8 @@ namespace GraphSequence
             // This example code places some new objects from the Standard Library into the active model of the project.
             if (context.ActiveModel != null)
             {
-                //var form = new Form1();
-
-                // Create a DataTable from the collection of Simio Tables and the Table name.
-                // Note/Todo: These can be set in a schema section
-                string explanation = "";
-                string tableName = "ImmediateSuccessorSequences";
-
-                var dt = SimioTableHelpers.CreateDataTableUsingInteractive(context.ActiveModel.Tables, tableName, out explanation);
-                if (dt == null)
-                {
-                    throw new Exception($"Cannot locate table name={tableName}");
-                }
-
-                if (dt.Columns.Count < 3)
-                {
-                    throw new Exception($"Table must have at least 3 columns={tableName}");
-                }
-
-                string colForFilter = dt.Columns[0].ColumnName;
-                string colForName = dt.Columns[1].ColumnName;
-                string colForSuccessor = dt.Columns[2].ColumnName;
-
                 // Launch the form for graphing
-                var form = new GraphSequenceForm();
-                form.DtRoutings = dt;
-                form.FilterColumn = colForFilter;
-                form.NameColumn = colForName;
-                form.SuccessorColumn = colForSuccessor;
+                var form = new GraphSequenceForm(context);
                 form.ShowDialog();
             }
         }

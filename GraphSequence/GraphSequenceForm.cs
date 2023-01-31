@@ -5,12 +5,17 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Linq;
 using Microsoft.Msagl.Core.Layout;
 using Microsoft.Msagl.Drawing;
+using SimioAPI;
+using SimioAPI.Extensions;
 
 namespace GraphSequence
 {
@@ -26,10 +31,78 @@ namespace GraphSequence
         public double _textPaddingFactor = 0.0;
         public double _fontSize = 5.0;
 
-        public GraphSequenceForm()
-        {            
-            InitializeComponent();
+        IDesignContext _context;
+
+        public GraphSequenceForm(IDesignContext context)
+        {   
+            try
+            { 
+                _context = context;
+                InitializeComponent();
+                var dt = new DataTable();
+                dt.Columns.Add("tableName");
+                foreach (var table in _context.ActiveModel.Tables)
+                {
+                    string[] t = new string[] { table.Name };
+                    dt.Rows.Add(t);
+                }
+                dt.DefaultView.Sort = "tableName";
+                var distictNames = dt.DefaultView.ToTable(false, "tableName");
+                foreach (DataRow row in distictNames.Rows)
+                {
+                    tableCombo.Items.Add(row["tableName"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
+        private void tableComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                ITable table = _context.ActiveModel.Tables[tableCombo.Text];
+                if (table == null)
+                {
+                    throw new Exception($"No Simio Table has name={tableCombo.Text}");
+                }
+
+                var dt = SimioTableHelpers.CreateDataTableUsingInteractive(table);
+                if (dt == null)
+                {
+                    throw new Exception($"Cannot locate table name={tableCombo.Text}");
+                }
+
+                if (dt.Columns.Count < 3)
+                {
+                    throw new Exception($"Table must have at least 3 columns={tableCombo.Text}");
+                }
+
+                string colForFilter = dt.Columns[0].ColumnName;
+                string colForName = dt.Columns[1].ColumnName;
+                string colForSuccessor = dt.Columns[2].ColumnName;
+
+                // Launch the form for graphing
+                DtRoutings = dt;
+                FilterColumn = colForFilter;
+                NameColumn = colForName;
+                SuccessorColumn = colForSuccessor;
+
+                DtRoutings.DefaultView.Sort = FilterColumn;
+                var distictNames = DtRoutings.DefaultView.ToTable(true, FilterColumn);
+
+                filterCombo.Items.Clear();
+                foreach (DataRow row in distictNames.Rows)
+                {
+                    filterCombo.Items.Add(row[FilterColumn]);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }        
 
         private void DrawSequences()
         {
@@ -40,7 +113,7 @@ namespace GraphSequence
                 Dictionary<string, string> nodeDict = new Dictionary<string, string>();
 
                 _filteredRoutings = DtRoutings.AsEnumerable()
-                          .Where(row => row.Field<String>(FilterColumn) == materialCombo.Text)
+                          .Where(row => row.Field<String>(FilterColumn) == filterCombo.Text)
                           .OrderByDescending(row => row.Field<String>(FilterColumn))
                           .CopyToDataTable();
 
@@ -138,18 +211,7 @@ namespace GraphSequence
             {
                 MessageBox.Show(ex.Message);
             }
-        }        
-
-        private void GraphSequenceForm_Load(object sender, EventArgs e)
-        {
-            DtRoutings.DefaultView.Sort = FilterColumn;
-            var distictMaterialsTable = DtRoutings.DefaultView.ToTable(true, FilterColumn);
-                
-            foreach (DataRow row in distictMaterialsTable.Rows)
-            {
-                materialCombo.Items.Add(row[FilterColumn]);
-            }
-        }
+        }      
 
         private void materialCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -189,5 +251,6 @@ namespace GraphSequence
             var dr = colorDialog1.ShowDialog();
             if (dr == DialogResult.OK) { DrawSequences(); }
         }
+
     }
 }
