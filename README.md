@@ -1,11 +1,11 @@
 # GraphSequence
 Used to create a graph of a task sequence.
 
-![image](https://user-images.githubusercontent.com/42541127/214170948-a0f4b7c6-2257-4732-b533-2309621f402b.png)
+![image](https://user-images.githubusercontent.com/42541127/216126882-0338ad9b-a205-4505-8b30-805bdd81f4c2.png)
 
 Works with C:\Program Files\Simio LLC\Simio\Examples\SchedulingParallelRouteController.spfx
 
-Get its data from the first 3 columns in the ImmediateSuccessorSequences table.  
+Gets its data from the first 3 columns in the selected table.  
 
 The first column is the filter. 
 
