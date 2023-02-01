@@ -69,15 +69,14 @@ namespace GraphSequence
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1275, 147);
+            this.panel1.Size = new System.Drawing.Size(1275, 169);
             this.panel1.TabIndex = 0;
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(356, 14);
+            this.label7.Location = new System.Drawing.Point(668, 11);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(943, 16);
+            this.label7.Size = new System.Drawing.Size(595, 44);
             this.label7.TabIndex = 22;
             this.label7.Text = "Select \'Table\' to get data for Graph.   Table must have 3 columns.; first column " +
     "used as filter, second used as sequence and thrid used as successor sequence.";
@@ -87,7 +86,7 @@ namespace GraphSequence
             this.tableCombo.FormattingEnabled = true;
             this.tableCombo.Location = new System.Drawing.Point(78, 8);
             this.tableCombo.Name = "tableCombo";
-            this.tableCombo.Size = new System.Drawing.Size(271, 24);
+            this.tableCombo.Size = new System.Drawing.Size(561, 24);
             this.tableCombo.TabIndex = 14;
             this.tableCombo.SelectedIndexChanged += new System.EventHandler(this.tableComboBox_SelectedIndexChanged);
             // 
@@ -102,7 +101,7 @@ namespace GraphSequence
             // 
             // buttonShapeColor
             // 
-            this.buttonShapeColor.Location = new System.Drawing.Point(1045, 84);
+            this.buttonShapeColor.Location = new System.Drawing.Point(1045, 119);
             this.buttonShapeColor.Name = "buttonShapeColor";
             this.buttonShapeColor.Size = new System.Drawing.Size(165, 35);
             this.buttonShapeColor.TabIndex = 21;
@@ -112,7 +111,7 @@ namespace GraphSequence
             // 
             // txtFontSize
             // 
-            this.txtFontSize.Location = new System.Drawing.Point(894, 90);
+            this.txtFontSize.Location = new System.Drawing.Point(894, 125);
             this.txtFontSize.Margin = new System.Windows.Forms.Padding(4);
             this.txtFontSize.Name = "txtFontSize";
             this.txtFontSize.Size = new System.Drawing.Size(50, 22);
@@ -124,7 +123,7 @@ namespace GraphSequence
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(756, 93);
+            this.label5.Location = new System.Drawing.Point(756, 128);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(65, 16);
@@ -133,7 +132,7 @@ namespace GraphSequence
             // 
             // txtTextPaddingFactor
             // 
-            this.txtTextPaddingFactor.Location = new System.Drawing.Point(609, 90);
+            this.txtTextPaddingFactor.Location = new System.Drawing.Point(609, 125);
             this.txtTextPaddingFactor.Margin = new System.Windows.Forms.Padding(4);
             this.txtTextPaddingFactor.Name = "txtTextPaddingFactor";
             this.txtTextPaddingFactor.Size = new System.Drawing.Size(58, 22);
@@ -145,7 +144,7 @@ namespace GraphSequence
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(443, 90);
+            this.label4.Location = new System.Drawing.Point(443, 125);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(131, 16);
@@ -155,7 +154,7 @@ namespace GraphSequence
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(10, 93);
+            this.label3.Location = new System.Drawing.Point(10, 128);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(126, 16);
@@ -164,7 +163,7 @@ namespace GraphSequence
             // 
             // txtDelimiter
             // 
-            this.txtDelimiter.Location = new System.Drawing.Point(227, 90);
+            this.txtDelimiter.Location = new System.Drawing.Point(227, 125);
             this.txtDelimiter.Margin = new System.Windows.Forms.Padding(4);
             this.txtDelimiter.Name = "txtDelimiter";
             this.txtDelimiter.Size = new System.Drawing.Size(36, 22);
@@ -176,7 +175,7 @@ namespace GraphSequence
             // materialLabel
             // 
             this.materialLabel.AutoSize = true;
-            this.materialLabel.Location = new System.Drawing.Point(13, 52);
+            this.materialLabel.Location = new System.Drawing.Point(13, 72);
             this.materialLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.materialLabel.Name = "materialLabel";
             this.materialLabel.Size = new System.Drawing.Size(39, 16);
@@ -187,19 +186,18 @@ namespace GraphSequence
             // 
             this.filterCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.filterCombo.FormattingEnabled = true;
-            this.filterCombo.Location = new System.Drawing.Point(78, 45);
+            this.filterCombo.Location = new System.Drawing.Point(78, 65);
             this.filterCombo.Margin = new System.Windows.Forms.Padding(4);
             this.filterCombo.Name = "filterCombo";
-            this.filterCombo.Size = new System.Drawing.Size(271, 24);
+            this.filterCombo.Size = new System.Drawing.Size(561, 24);
             this.filterCombo.TabIndex = 9;
             this.filterCombo.SelectedIndexChanged += new System.EventHandler(this.materialCombo_SelectedIndexChanged);
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(356, 50);
+            this.label2.Location = new System.Drawing.Point(665, 65);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(677, 16);
+            this.label2.Size = new System.Drawing.Size(607, 16);
             this.label2.TabIndex = 8;
             this.label2.Text = "Select \'Filter\' to create the Graph (see the Graph tab). Use the Plus and Minus (" +
     "+/-) to zoom, and arrow keys to pan.";
@@ -208,9 +206,9 @@ namespace GraphSequence
             // 
             this.panel2.Controls.Add(this.gViewer);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 147);
+            this.panel2.Location = new System.Drawing.Point(0, 169);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1275, 635);
+            this.panel2.Size = new System.Drawing.Size(1275, 613);
             this.panel2.TabIndex = 1;
             // 
             // gViewer
@@ -243,7 +241,7 @@ namespace GraphSequence
             this.gViewer.SaveButtonVisible = true;
             this.gViewer.SaveGraphButtonVisible = true;
             this.gViewer.SaveInVectorFormatEnabled = true;
-            this.gViewer.Size = new System.Drawing.Size(1275, 635);
+            this.gViewer.Size = new System.Drawing.Size(1275, 613);
             this.gViewer.TabIndex = 0;
             this.gViewer.TightOffsetForRouting = 0.125D;
             this.gViewer.ToolBarIsVisible = true;
