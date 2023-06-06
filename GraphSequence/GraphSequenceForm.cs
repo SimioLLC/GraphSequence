@@ -11,6 +11,9 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using Microsoft.Msagl.Core.Layout;
 using Microsoft.Msagl.Drawing;
+using System.Xml;
+using System.IO;
+using System.ComponentModel.Design.Serialization;
 
 namespace GraphSequence
 {
@@ -31,6 +34,117 @@ namespace GraphSequence
             InitializeComponent();
         }
 
+        internal class SequenceItem
+        {
+            public string Id { get; set; }
+            public string SuccessorId { get; set; }
+            public string Material { get; set; }
+
+            public SequenceItem(string id, string successorId, string material)
+            {
+                this.Id = id;
+                this.SuccessorId = successorId;
+                this.Material = material;
+            }
+        }
+
+        /// <summary>
+        /// Draw the directed graph for sequences.
+        /// </summary>
+        private static void CreateDirectedGraphFromSequences(DataTable dtRoutings, string filepath, string filterColumn, string idColumn, string successorColumn, string filterText)
+        {
+            try
+            {
+                // Create a new XML document
+                XmlDocument doc = new XmlDocument();
+
+                // Create the root element for the DGML file
+                XmlElement root = doc.CreateElement("DirectedGraph", "http://schemas.microsoft.com/vs/2009/dgml");
+
+                // Add the root element to the document
+                doc.AppendChild(root);
+
+                Dictionary<string, SequenceItem> nodeDict = new Dictionary<string, SequenceItem>();
+
+                DataTable _filteredRoutings = dtRoutings.AsEnumerable()
+                          .Where(row => row.Field<String>(filterColumn) == filterText)
+                          .OrderByDescending(row => row.Field<String>(filterColumn))
+                          .CopyToDataTable();
+
+
+                // Add nodes
+                XmlElement xeNodes = doc.CreateElement("Nodes");
+                root.AppendChild(xeNodes);
+
+                foreach (DataRow dr in _filteredRoutings.Rows)
+                {
+                    string id = dr[idColumn] as string;
+
+                    if (!nodeDict.Keys.Contains(id))
+                    {
+                        string filter = dr[filterColumn] as string;
+                        string successorId = dr[successorColumn] as string;
+                        nodeDict.Add(id, new SequenceItem(id, successorId, filter));
+
+                        // Create a node element
+                        XmlElement xeNode= doc.CreateElement("Node");
+                        xeNode.SetAttribute("Id", id);
+                        xeNode.SetAttribute("Label", id);
+
+                        xeNodes.AppendChild(xeNode);
+                    }
+
+                }
+
+                // Now run through the dictionary to make sure there are no forgotten nodes.
+                // These would be successors and if there are no nodes then they are terminator nodes
+                Dictionary<string, SequenceItem> terminatorDict = new Dictionary<string, SequenceItem>();
+                foreach ( SequenceItem si in nodeDict.Values)
+                {
+                    if ( (false == nodeDict.ContainsKey(si.SuccessorId)) && (false == terminatorDict.ContainsKey(si.SuccessorId)))
+                    {
+                        terminatorDict.Add(si.SuccessorId, new SequenceItem(si.SuccessorId, string.Empty, si.Material));
+                    }
+                }
+
+                foreach ( SequenceItem si in terminatorDict.Values)
+                {
+                    XmlElement xeNode = doc.CreateElement("Node");
+                    xeNode.SetAttribute("Id", si.Id);
+                    xeNode.SetAttribute("Label", si.Id);
+                    xeNodes.AppendChild(xeNode);
+                }
+
+
+                // Do the edges
+                XmlElement xeEdges = doc.CreateElement("Links");
+                root.AppendChild(xeEdges);
+
+                foreach (SequenceItem item in nodeDict.Values)
+                {
+                    // Create an edge element if there is a successor
+                    if (!string.IsNullOrEmpty(item.SuccessorId))
+                    {
+                        XmlElement xeEdge = doc.CreateElement("Link");
+                        xeEdge.SetAttribute("Source", item.Id);
+                        xeEdge.SetAttribute("Target", item.SuccessorId);
+                        xeEdge.SetAttribute("Label", "");
+
+                        xeEdges.AppendChild(xeEdge);
+                    }
+                }
+
+                doc.Save(filepath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Draw the directed graph for sequences.
+        /// </summary>
         private void DrawSequences()
         {
             try
@@ -188,6 +302,25 @@ namespace GraphSequence
         {
             var dr = colorDialog1.ShowDialog();
             if (dr == DialogResult.OK) { DrawSequences(); }
+        }
+
+        private void buttonSaveGraph_Click(object sender, EventArgs e)
+        {
+            if (DtRoutings.Rows.Count == 0)
+                return;
+            if (string.IsNullOrEmpty(materialCombo.Text))
+                return;
+
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Title = "Save Directed Graph as DGML file";
+            dialog.Filter = "DGML Files (*.dgml)|*.dgml";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                string selectedFilepath = dialog.FileName;
+
+                CreateDirectedGraphFromSequences(DtRoutings, selectedFilepath, FilterColumn, NameColumn, SuccessorColumn, materialCombo.Text);
+            }
         }
     }
 }

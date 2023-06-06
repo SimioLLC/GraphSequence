@@ -1,0 +1,12 @@
+C:\Users\dan_h\source\repos\GraphSequence\Executables\GraphSequence.dll
+C:\Users\dan_h\source\repos\GraphSequence\Executables\GraphSequence.pdb
+C:\Users\dan_h\source\repos\GraphSequence\GraphSequence\obj\Debug\GraphSequence.csproj.AssemblyReference.cache
+C:\Users\dan_h\source\repos\GraphSequence\GraphSequence\obj\Debug\GraphSequence.GraphSequenceForm.resources
+C:\Users\dan_h\source\repos\GraphSequence\GraphSequence\obj\Debug\GraphSequence.Properties.Resources.resources
+C:\Users\dan_h\source\repos\GraphSequence\GraphSequence\obj\Debug\GraphSequence.csproj.GenerateResource.cache
+C:\Users\dan_h\source\repos\GraphSequence\GraphSequence\obj\Debug\GraphSequence.csproj.CoreCompileInputs.cache
+C:\Users\dan_h\source\repos\GraphSequence\GraphSequence\obj\Debug\GraphSequence.csproj.CopyComplete
+C:\Users\dan_h\source\repos\GraphSequence\GraphSequence\obj\Debug\GraphSequence.dll
+C:\Users\dan_h\source\repos\GraphSequence\GraphSequence\obj\Debug\GraphSequence.pdb
+C:\Users\dan_h\Documents\SimioUserExtensions\GraphSequence.dll
+C:\Users\dan_h\Documents\SimioUserExtensions\GraphSequence.pdb
