@@ -8,9 +8,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Linq;
 using Microsoft.Msagl.Core.Layout;
 using Microsoft.Msagl.Drawing;
+using SimioAPI;
+using SimioAPI.Extensions;
 using System.Xml;
 using System.IO;
 using System.ComponentModel.Design.Serialization;
@@ -29,9 +32,53 @@ namespace GraphSequence
         public double _textPaddingFactor = 0.0;
         public double _fontSize = 5.0;
 
-        public GraphSequenceForm()
-        {            
-            InitializeComponent();
+        IDesignContext _context;
+
+        public GraphSequenceForm(IDesignContext context)
+        {   
+            try
+            { 
+                _context = context;
+                InitializeComponent();
+                var dt = new DataTable();
+                dt.Columns.Add("tableName");
+                foreach (var table in _context.ActiveModel.Tables)
+                {
+                    string[] t = new string[] { table.Name };
+                    dt.Rows.Add(t);
+                }
+                dt.DefaultView.Sort = "tableName";
+                var distictNames = dt.DefaultView.ToTable(false, "tableName");
+                foreach (DataRow row in distictNames.Rows)
+                {
+                    tableCombo.Items.Add(row["tableName"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void tableComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                ITable table = _context.ActiveModel.Tables[tableCombo.Text];
+                if (table == null)
+                {
+                    throw new Exception($"No Simio Table has name={tableCombo.Text}");
+                }
+
+                var dt = SimioTableHelpers.CreateDataTableUsingInteractive(table);
+                if (dt == null)
+                {
+                    throw new Exception($"Cannot locate table name={tableCombo.Text}");
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         internal class SequenceItem
@@ -154,7 +201,7 @@ namespace GraphSequence
                 Dictionary<string, string> nodeDict = new Dictionary<string, string>();
 
                 _filteredRoutings = DtRoutings.AsEnumerable()
-                          .Where(row => row.Field<String>(FilterColumn) == materialCombo.Text)
+                          .Where(row => row.Field<String>(FilterColumn) == filterCombo.Text)
                           .OrderByDescending(row => row.Field<String>(FilterColumn))
                           .CopyToDataTable();
 
@@ -252,18 +299,7 @@ namespace GraphSequence
             {
                 MessageBox.Show(ex.Message);
             }
-        }        
-
-        private void GraphSequenceForm_Load(object sender, EventArgs e)
-        {
-            DtRoutings.DefaultView.Sort = FilterColumn;
-            var distictMaterialsTable = DtRoutings.DefaultView.ToTable(true, FilterColumn);
-                
-            foreach (DataRow row in distictMaterialsTable.Rows)
-            {
-                materialCombo.Items.Add(row[FilterColumn]);
-            }
-        }
+        }      
 
         private void materialCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -308,7 +344,7 @@ namespace GraphSequence
         {
             if (DtRoutings.Rows.Count == 0)
                 return;
-            if (string.IsNullOrEmpty(materialCombo.Text))
+            if (string.IsNullOrEmpty(filterCombo.Text))
                 return;
 
             SaveFileDialog dialog = new SaveFileDialog();
@@ -319,7 +355,7 @@ namespace GraphSequence
             {
                 string selectedFilepath = dialog.FileName;
 
-                CreateDirectedGraphFromSequences(DtRoutings, selectedFilepath, FilterColumn, NameColumn, SuccessorColumn, materialCombo.Text);
+                CreateDirectedGraphFromSequences(DtRoutings, selectedFilepath, FilterColumn, NameColumn, SuccessorColumn, filterCombo.Text);
             }
         }
     }
