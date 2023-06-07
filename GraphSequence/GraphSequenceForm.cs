@@ -74,17 +74,56 @@ namespace GraphSequence
                 {
                     throw new Exception($"Cannot locate table name={tableCombo.Text}");
                 }
+
+                string colForFilter = dt.Columns[0].ColumnName;
+                string colForName = dt.Columns[1].ColumnName;
+                string colForSuccessor = dt.Columns[2].ColumnName;
+
+                if (dt.Columns.Count < 3)
+                {
+                    throw new Exception($"Table={tableCombo.Text} must have at least 3 columns, but found={dt.Columns.Count}");
+                }
+
+                // Launch the form for graphing
+                DtRoutings = dt;
+                FilterColumn = colForFilter;
+                NameColumn = colForName;
+                SuccessorColumn = colForSuccessor;
+
+                DtRoutings.DefaultView.Sort = FilterColumn;
+                var distictNames = DtRoutings.DefaultView.ToTable(true, FilterColumn);
+
+                filterCombo.Items.Clear();
+                foreach (DataRow row in distictNames.Rows)
+                {
+                    filterCombo.Items.Add(row[FilterColumn]);
+                }
+
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
         }
 
+        /// <summary>
+        /// A sequence item holds the three necessary data to describe a sequence of dependencies.
+        /// </summary>
         internal class SequenceItem
         {
+            /// <summary>
+            /// 'Our' ID
+            /// </summary>
             public string Id { get; set; }
+
+            /// <summary>
+            /// A pointer to the ID of our successor
+            /// </summary>
             public string SuccessorId { get; set; }
+
+            /// <summary>
+            /// The material
+            /// </summary>
             public string Material { get; set; }
 
             public SequenceItem(string id, string successorId, string material)
@@ -96,7 +135,7 @@ namespace GraphSequence
         }
 
         /// <summary>
-        /// Draw the directed graph for sequences.
+        /// Draw the directed graph for the dependency sequences.
         /// </summary>
         private static void CreateDirectedGraphFromSequences(DataTable dtRoutings, string filepath, string filterColumn, string idColumn, string successorColumn, string filterText)
         {
@@ -140,7 +179,6 @@ namespace GraphSequence
 
                         xeNodes.AppendChild(xeNode);
                     }
-
                 }
 
                 // Now run through the dictionary to make sure there are no forgotten nodes.
@@ -161,7 +199,6 @@ namespace GraphSequence
                     xeNode.SetAttribute("Label", si.Id);
                     xeNodes.AppendChild(xeNode);
                 }
-
 
                 // Do the edges
                 XmlElement xeEdges = doc.CreateElement("Links");
@@ -272,7 +309,7 @@ namespace GraphSequence
                         textLength = Math.Ceiling(_textPaddingFactor * successor.Length);
                         for (int j = 0; j < textLength; j++)
                         {
-                            successor = successor + " ";
+                            successor += " ";
                         }
                     }
 
